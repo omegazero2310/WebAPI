@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using WebAPI.JWTClass;
+using WebAPI.Models;
 using WebAPI.POCOClass;
 
 namespace WebAPI.Controllers
@@ -18,58 +19,44 @@ namespace WebAPI.Controllers
     [ApiController]
     public class AccountController : ControllerBase
     {
-        /// <summary>
-        /// The logins for demo. TODO: get login info from database
-        /// </summary>
-        /// <Modified>
-        /// Name Date Comments
-        /// annv3 8/9/2022 created
-        /// </Modified>
-        private IEnumerable<Users> logins = new List<Users>() {
-            new Users() {
-                    Id = Guid.NewGuid(),
-                        EmailAddress = "adminakp@gmail.com",
-                        UserName = "Admin",
-                        Password = "Admin",
-                },
-                new Users() {
-                    Id = Guid.NewGuid(),
-                        EmailAddress = "adminakp@gmail.com",
-                        UserName = "User1",
-                        Password = "Admin",
-                }
-        };
-        private readonly JwtSettings jwtSettings;
-        public AccountController(JwtSettings jwtSettings)
+        private readonly IConfiguration _configuration;
+        private JwtSettings _jwtSettings;
+        public AccountController(JwtSettings jwtSettings, IConfiguration configuration)
         {
-            this.jwtSettings = jwtSettings;
+            this._configuration = configuration;
+            this._jwtSettings = jwtSettings;
         }
         [HttpPost]
         public IActionResult GetToken(UserLogins userLogins)
         {
             try
             {
-                var Token = new UserTokens();
-                var Valid = logins.Any(x => x.UserName.Equals(userLogins.UserName, StringComparison.OrdinalIgnoreCase));
-                if (Valid)
+                using (var db = new WebApiDBContext(this._configuration))
                 {
-                    var user = logins.FirstOrDefault(x => x.UserName.Equals(userLogins.UserName, StringComparison.OrdinalIgnoreCase));
-                    Token = JwtHelpers.GenTokenkey(new UserTokens()
+                    var Token = new UserTokens();
+                    //TODO: compare password base on hash, not plain text
+                    var Valid = db.User.Any(x => x.UserName.Equals(userLogins.UserName) && x.Password.Equals(userLogins.Password));
+                    if (Valid)
                     {
-                        EmailId = user.EmailAddress,
-                        GuidId = Guid.NewGuid(),
-                        UserName = user.UserName,
-                        Id = user.Id,
-                    }, jwtSettings);
-                }
-                else
-                {
-                    return BadRequest($"wrong password");
-                }
-                return Ok(Token);
+                        var user = db.User.FirstOrDefault(x => x.UserName.Equals(userLogins.UserName));
+                        Token = JwtHelpers.GenTokenkey(new UserTokens()
+                        {
+                            EmailId = user.EmailAddress,
+                            GuidId = Guid.NewGuid(),
+                            UserName = user.UserName,
+                            Id = user.Id,
+                        }, _jwtSettings);
+                    }
+                    else
+                    {
+                        return BadRequest($"wrong user name or password");
+                    }
+                    return Ok(Token);
+                }       
             }
             catch (Exception ex)
             {
+                
                 throw;
             }
         }
