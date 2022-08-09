@@ -1,16 +1,27 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Linq;
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace WebAPI.Controllers
 {
+
+    /// <summary>
+    /// API controller for CRUD with Employee Data
+    ///   <br />
+    /// </summary>
+    /// <Modified>
+    /// Name Date Comments
+    /// annv3 8/9/2022 created
+    /// </Modified>
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(AuthenticationSchemes = Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerDefaults.AuthenticationScheme)]
     public class EmployeeController : ControllerBase
     {
 
-        /// <summary>The list employee</summary>
+        /// <summary>The list employee as example. TODO: get Employee data from Database not hardcode</summary>
         /// <Modified>
         /// Name Date Comments
         /// annv3 8/9/2022 created

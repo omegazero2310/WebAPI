@@ -2,7 +2,7 @@
 {
 
     /// <summary>
-    ///     Lưu trữ thông tin nhân viên
+    ///     Save Employee common info
     ///   <br />
     /// </summary>
     /// <Modified>
