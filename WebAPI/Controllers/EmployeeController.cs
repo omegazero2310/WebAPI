@@ -15,7 +15,16 @@ namespace WebAPI.Controllers
         /// Name Date Comments
         /// annv3 8/9/2022 created
         /// </Modified>
-        private static List<POCOClass.Employee> _ListEmployee = new List<POCOClass.Employee>() { new POCOClass.Employee() { Id = "1", Name = "An", DateOfBirth = DateTime.Now, ExtraInfo = "123" } };
+        private static List<POCOClass.Employee> _ListEmployee = new List<POCOClass.Employee>() 
+        { 
+            new POCOClass.Employee() 
+                { 
+                    Id = "1", 
+                    Name = "An", 
+                    DateOfBirth = DateTime.Now, 
+                    ExtraInfo = "123" 
+                } 
+        };
 
         // GET: api/<EmployeeController>
         [HttpGet]
