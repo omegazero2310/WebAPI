@@ -27,7 +27,7 @@ namespace WebAPI.Controllers
             this._jwtSettings = jwtSettings;
         }
         [HttpPost]
-        public IActionResult GetToken(UserLogins userLogins)
+        public IActionResult GetToken([FromBody] UserLogins userLogins)
         {
             try
             {
