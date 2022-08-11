@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System.Linq;
 using WebAPI.Models;
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -82,8 +83,11 @@ namespace WebAPI.Controllers
             using (var dbContext = new WebApiDBContext(_configuration))
             {
                 POCOClass.Employee employee = new POCOClass.Employee() { Id = id };
-                dbContext.Remove<POCOClass.Employee>(employee);
-                dbContext.SaveChanges();
+                if (!dbContext.Employees.Any(emp => emp.Id == id))
+                {
+                    dbContext.Remove<POCOClass.Employee>(employee);
+                    dbContext.SaveChanges();
+                }            
             }
         }
     }
