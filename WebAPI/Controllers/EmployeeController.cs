@@ -83,7 +83,7 @@ namespace WebAPI.Controllers
             using (var dbContext = new WebApiDBContext(_configuration))
             {
                 POCOClass.Employee employee = new POCOClass.Employee() { Id = id };
-                if (!dbContext.Employees.Any(emp => emp.Id == id))
+                if (dbContext.Employees.Any(emp => emp.Id == id))
                 {
                     dbContext.Remove<POCOClass.Employee>(employee);
                     dbContext.SaveChanges();
